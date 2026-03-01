@@ -1,0 +1,16 @@
+{
+  "name": "Crisalida",
+  "short_name": "Crisalida",
+  "description": "Your personalized AI companion",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/public/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/public/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["games", "entertainment"],
+  "prefer_related_applications": false
+}

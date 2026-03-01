@@ -1,0 +1,13 @@
+{
+  "name": "Crisalida Metaverse",
+  "short_name": "CrisalidaMeta",
+  "description": "Immersive 3D metaverse for AI companions",
+  "start_url": "/metaverse/",
+  "display": "fullscreen",
+  "background_color": "#0d0d1a",
+  "theme_color": "#a855f7",
+  "orientation": "landscape",
+  "icons": [
+    { "src": "/public/icon-192.png", "sizes": "192x192", "type": "image/png" }
+  ]
+}

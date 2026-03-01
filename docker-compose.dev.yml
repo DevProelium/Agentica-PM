@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  postgres:
+    ports:
+      - "5432:5432"
+
+  minio:
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    command: npm run dev
+    environment:
+      NODE_ENV: development
+      LOG_LEVEL: debug
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+
+  frontend-pwa:
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend-pwa:/usr/share/nginx/html
+
+  frontend-metaverse:
+    ports:
+      - "8081:80"
+    volumes:
+      - ./frontend-metaverse:/usr/share/nginx/html
+
+  nginx:
+    ports:
+      - "80:80"

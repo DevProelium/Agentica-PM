@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d0d1a" />
+  <title>Crisalida Metaverse</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0d0d1a; color: #eaeaea; font-family: 'Segoe UI', system-ui, sans-serif; overflow: hidden; }
+    #canvas { position: fixed; inset: 0; display: block; width: 100%; height: 100%; touch-action: none; }
+    #hud { position: fixed; top: 0; left: 0; right: 0; z-index: 10; }
+    #room-list {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      background: rgba(13,13,26,0.96); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 24px; width: min(360px, 90vw); z-index: 100;
+    }
+    #room-list h2 { margin-bottom: 16px; font-size: 1.2rem; }
+    .room-btn {
+      width: 100%; padding: 12px 16px; margin-bottom: 8px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; color: #eaeaea; cursor: pointer; text-align: left; font-size: 14px;
+    }
+    .room-btn:hover { background: rgba(233,69,96,0.15); border-color: #e94560; }
+    #loading-screen {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: #0d0d1a; gap: 16px;
+    }
+    #loading-screen h1 { font-size: 2rem; color: #a855f7; }
+    .spinner { width: 40px; height: 40px; border: 3px solid rgba(168,85,247,0.2); border-top-color: #a855f7; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #crosshair { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); color: rgba(255,255,255,0.5); font-size: 18px; pointer-events: none; z-index: 10; }
+    #info-panel { position: fixed; bottom: 16px; left: 16px; background: rgba(13,13,26,0.8); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #8892a4; z-index: 10; }
+  </style>
+</head>
+<body>
+  <div id="loading-screen">
+    <h1>🌐 Metaverse</h1>
+    <div class="spinner"></div>
+    <p style="color:#8892a4;font-size:13px">Loading world…</p>
+  </div>
+
+  <canvas id="canvas"></canvas>
+
+  <div id="hud"></div>
+  <div id="crosshair">+</div>
+  <div id="info-panel">WASD to move · Mouse to look · E to interact</div>
+
+  <div id="room-list" style="display:none">
+    <h2>🌐 Choose a Room</h2>
+    <div id="rooms-container"></div>
+    <button class="room-btn" id="quick-join">⚡ Quick Join Public</button>
+    <button class="room-btn" id="create-room" style="margin-top:4px">+ Create Room</button>
+    <button class="room-btn" id="solo-mode" style="margin-top:4px">🏠 Solo Mode</button>
+  </div>
+
+  <script type="module" src="/src/core/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "name": "crisalida-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "migrate": "node -e \"import('./db/migrate.js').then(m => m.default())\"",
+    "seed": "node -e \"import('./db/seed.js').then(m => m.default())\""
+  },
+  "dependencies": {
+    "express-rate-limit": "^7.4.1",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "minio": "^7.1.3",
+    "morgan": "^1.10.0",
+    "multer": "^2.1.0",
+    "node-fetch": "^3.3.2",
+    "pg": "^8.11.3",
+    "ws": "^8.16.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

@@ -1,2 +1,2 @@
-# Agentica-PM
-Agentica proyect manager
+# Agentica-Crisalida
+Agentica crisalida
