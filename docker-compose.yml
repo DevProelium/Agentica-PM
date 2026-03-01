@@ -1,0 +1,104 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: crisalida-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sh:/docker-entrypoint-initdb.d/init.sh:ro
+      - ./backend/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    networks:
+      - crisalida-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio:latest
+    container_name: crisalida-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+    volumes:
+      - minio_data:/data
+    networks:
+      - crisalida-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: crisalida-backend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - crisalida-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend-pwa:
+    image: nginx:alpine
+    container_name: crisalida-pwa
+    restart: unless-stopped
+    volumes:
+      - ./frontend-pwa:/usr/share/nginx/html:ro
+    networks:
+      - crisalida-net
+
+  frontend-metaverse:
+    image: nginx:alpine
+    container_name: crisalida-metaverse
+    restart: unless-stopped
+    volumes:
+      - ./frontend-metaverse:/usr/share/nginx/html:ro
+    networks:
+      - crisalida-net
+
+  nginx:
+    image: nginx:alpine
+    container_name: crisalida-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+      - frontend-pwa
+      - frontend-metaverse
+    networks:
+      - crisalida-net
+
+volumes:
+  postgres_data:
+  minio_data:
+
+networks:
+  crisalida-net:
+    driver: bridge
