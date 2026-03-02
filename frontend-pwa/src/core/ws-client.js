@@ -8,7 +8,7 @@ export function connect() {
   if (!token) return;
   if (ws && ws.readyState < 2) return; // already open or connecting
 
-  const wsUrl = `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws?token=${token}`;
+  const wsUrl = `ws://localhost:4001/ws?token=${token}`;
   ws = new WebSocket(wsUrl);
 
   ws.onopen  = () => { console.log('[WS] connected'); emit('_connected', {}); };

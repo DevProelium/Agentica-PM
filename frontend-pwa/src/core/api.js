@@ -1,6 +1,6 @@
 import { getState } from './store.js';
 
-const BASE = '/api/v1';
+const BASE = 'http://localhost:4000/api/v1';
 
 async function request(method, path, body, opts = {}) {
   const token = getState('accessToken');

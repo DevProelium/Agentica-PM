@@ -47,10 +47,21 @@ function joinRoom(roomId) {
 
   const canvas = document.getElementById('canvas');
   const world  = new World(canvas);
-  world.start();
+  world.start().catch(err => console.error('World start failed:', err));
 
   const hud = new HUD(document.getElementById('hud'));
   hud.init();
+
+  // Emisor de posición para que Alicia nos vea
+  setInterval(() => {
+    if (world.camera && token) {
+      const pos = world.camera.position;
+      send('metaverse', { 
+        action: 'move', 
+        position: { x: pos.x.toFixed(2), y: pos.y.toFixed(2), z: pos.z.toFixed(2) } 
+      });
+    }
+  }, 2000);
 
   if (token) {
     connectWs(token);
@@ -62,3 +73,7 @@ function joinRoom(roomId) {
     on('metaverse:player_moved', data => world.onPlayerMoved(data));
     on('metaverse:player_joined', data => hud.notify(`Player joined: ${data.userId.slice(0,8)}`));
     on('metaverse:chat', data => hud.showChat(data));
+  }
+}
+
+bootstrap();

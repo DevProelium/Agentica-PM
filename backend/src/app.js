@@ -24,14 +24,13 @@ import metaverseRoutes   from './routes/metaverse.routes.js';
 const app = express();
 
 // ── Security ──────────────────────────────────────────────────
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+  crossOriginEmbedderPolicy: false
+}));
 
-const allowedOrigins = env.CORS_ORIGINS.split(',').map(o => o.trim());
 app.use(cors({
-  origin: (origin, cb) => {
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    cb(new Error('Not allowed by CORS'));
-  },
+  origin: true, // Allow all origins in dev for testing
   credentials: true,
 }));
 

@@ -21,6 +21,6 @@ const addSchema = z.object({
 router.get('/:agentId',       ctrl.list);
 router.post('/:agentId',      upload.single('file'), ctrl.add);
 router.delete('/:agentId/:id', ctrl.remove);
-router.post('/:agentId/search', z.object({ query: z.string() }), ctrl.search);
+router.post('/:agentId/search', validate({ body: z.object({ query: z.string() }) }), ctrl.search);
 
 export default router;

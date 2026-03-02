@@ -1,6 +1,8 @@
 import { query, withTransaction } from '../config/database.js';
 import { createConnector }        from '../connectors/connector-factory.js';
 import { logger }                 from '../utils/logger.js';
+import soulService                from './soul.service.js';
+import environmentService         from './environment.service.js';
 
 export class AgentService {
   // ── Retrieval ───────────────────────────────────────────────
@@ -10,7 +12,18 @@ export class AgentService {
       'SELECT * FROM agents WHERE id = $1 AND user_id = $2',
       [agentId, userId]
     );
-    return rows[0] || null;
+    
+    const agent = rows[0];
+    if (agent) {
+      // Inyectar el "Alma" dinámica de los archivos MD si están disponibles
+      const soulPrompt = await soulService.loadSoulAsPrompt(agent.name.toLowerCase());
+      if (soulPrompt) {
+        agent.systemPrompt = soulPrompt;
+        logger.info(`[AgentService] Dynamic soul injected for agent: ${agent.name}`);
+      }
+    }
+    
+    return agent || null;
   }
 
   async listByUser(userId) {
@@ -110,10 +123,13 @@ export class AgentService {
     const contextMessages = history.reverse();
 
     // Build system prompt
-    const systemPrompt = agent.system_prompt ||
-      `You are ${agent.name}, a ${agent.personality} AI companion.
-Your current status: hunger=${agent.hunger}, happiness=${agent.happiness}, energy=${agent.energy}.
-Respond in character. Be concise and engaging.`;
+    let systemPrompt = agent.systemPrompt || 
+      `You are ${agent.name}, a ${agent.personality} AI companion.`;
+
+    // Inyectar percepción del entorno (quién está cerca, qué hay)
+    // Buscamos si el agente está en alguna sala (esto se llenaría vía Websockets en tiempo real)
+    const perception = environmentService.getPerceptionPrompt('lobby'); // lobby por defecto para pruebas
+    systemPrompt += `\n\n${perception}`;
 
     const messages = [
       { role: 'system', content: systemPrompt },

@@ -3,12 +3,12 @@ version: '3.9'
 services:
   postgres:
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
   minio:
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "9003:9000"
+      - "9004:9001"
 
   backend:
     build:
@@ -20,20 +20,21 @@ services:
       LOG_LEVEL: debug
     volumes:
       - ./backend:/app
-      - /app/node_modules
     ports:
-      - "3000:3000"
-      - "3001:3001"
+      - "4000:3000"
+      - "4001:3001"
 
   frontend-pwa:
+    image: nginx:alpine
     ports:
-      - "8080:80"
+      - "8083:80"
     volumes:
       - ./frontend-pwa:/usr/share/nginx/html
 
   frontend-metaverse:
+    image: nginx:alpine
     ports:
-      - "8081:80"
+      - "8084:80"
     volumes:
       - ./frontend-metaverse:/usr/share/nginx/html
 
